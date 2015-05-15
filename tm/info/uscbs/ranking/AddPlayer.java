@@ -21,7 +21,8 @@ public class AddPlayer extends HttpServlet
 
 		// Actual logic goes here.
 		PrintWriter out = response.getWriter();
-		out.println("<h1>" + request.getParameter(first_name) + " " + request.getParameter(last_name) + "</h1>");		
+		out.println("<h1>" + request.getParameter ("first_name") + " " + request.getParameter ("last_name") + "</h1>");
+		out.println("Geboren am " + request.getParameter ("birthday_day") + "." + request.getParameter ("birthday_month") + "." + request.getParameter ("birthday_year") + " wurde der Datenbank hinzugefügt.");
 	}
 
 	public void destroy()
