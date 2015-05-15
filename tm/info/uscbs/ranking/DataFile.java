@@ -1,3 +1,5 @@
+package tm.info.uscbs.ranking;
+
 class DataFile implements DataInterface
 {
 	public int getPlayerValue (String playerName)

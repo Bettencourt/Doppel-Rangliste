@@ -1,3 +1,5 @@
+package tm.info.uscbs.ranking;
+
 interface DataInterface
 {
 	/**
