@@ -1,8 +1,6 @@
 package tm.info.uscbs.ranking;
 
-import java.util.Vector;
-
-class Player
+public class Player
 {
 	private int m_ID;
 	private String m_firstName;
@@ -24,5 +22,20 @@ class Player
 		m_birthdayMonth = birthdayMonth;
 		m_birthdayYear = birthdayYear;
 		m_sex = sex;
+	}
+	
+	public String getFirstName()
+	{
+		return m_firstName;
+	}
+	
+	public String getFullName()
+	{
+		return m_firstName + " " + m_lastName;
+	}
+	
+	public int getID()
+	{
+		return m_ID;
 	}
 }
