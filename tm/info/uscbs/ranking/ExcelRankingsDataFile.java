@@ -1,5 +1,12 @@
 package tm.info.uscbs.ranking;
 
+import java.io.IOException;
+import java.io.File;
+import java.util.Vector;
+
+import jxl.Workbook;
+import jxl.write.*;
+
 class ExcelRankingsDataFile implements DataInterface
 {
 	private WritableWorkbook rankingsDataWorkbook;
@@ -8,12 +15,19 @@ class ExcelRankingsDataFile implements DataInterface
 	/**
 	* Open the Workbook.
 	*/
-	public ExcelFile ()
+	public ExcelRankingsDataFile ()
 	{
-		rankingsDataWorkbook = Workbook.createWorkbook(new File("DoppelRangliste.xls")); 
-		
-		// the playersSheet must already exist, so set the variable the the existing players sheet
-		playersSheet = workbook.createSheet("Spieler", 0); 
+		try
+		{
+			rankingsDataWorkbook = Workbook.createWorkbook(new File("DoppelRangliste.xls")); 
+			
+			// the playersSheet must already exist, so set the variable the the existing players sheet
+			playersSheet = rankingsDataWorkbook.createSheet("Spieler", 0); 
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
 	}
 	
 	/**
@@ -24,7 +38,7 @@ class ExcelRankingsDataFile implements DataInterface
 	*/
 	public Player getPlayer (int playerID)
 	{
-		return new Player();
+		return new Player(-1, "Max", "Mustermann", -1, -1, -1, false);
 	}
 	
 	/**
@@ -40,26 +54,35 @@ class ExcelRankingsDataFile implements DataInterface
 	*/
 	public Player addPlayer (String firstName, String lastName, int birthdayDay, int birthdayMonth, int birthdayYear, boolean sex)
 	{
-		// Go to the Players Tab
-		// Find the last line
-		// Find out the new ID
 		int newID = -1;
 		
-		// Write Player Data into the columns
-		Label label = new Label(0, 2, "A label record");
-		sheet.addCell(label);
+		try
+		{
+			// Go to the Players Tab
+			// Find the last line
+			// Find out the new ID
+			newID = -1;
+			
+			// Write Player Data into the columns
+			Label label = new Label(0, 2, "A label record");
+			playersSheet.addCell(label);
 
-		Number number = new Number(3, 4, 3.1459);
-		sheet.addCell(number); 
-		
-		rankingsDataWorkbook.write();
-		rankingsDataWorkbook.close();
+			jxl.write.Number number = new jxl.write.Number(3, 4, 3.1459);
+			playersSheet.addCell(number); 
+			
+			rankingsDataWorkbook.write();
+			rankingsDataWorkbook.close();
+		}		
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
 		
 		// Create and return new Player object
 		return new Player (newID, firstName, lastName, birthdayDay, birthdayMonth, birthdayYear, sex);
 	}	
 	
-	public boolean addPlayerValue (int newPlayerValue)
+	public boolean addPlayerValue (int playerID, int newPlayerValue)
 	{
 		return true;
 	}

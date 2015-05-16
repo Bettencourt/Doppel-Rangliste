@@ -4,23 +4,25 @@ import java.util.Vector;
 
 class Player
 {
-	String firstName;
-	String surname;
-	int age;
-	Vector games;
-	int[] vaues;
+	private int m_ID;
+	private String m_firstName;
+	private String m_lastName;
+	private int m_birthdayDay;
+	private int m_birthdayMonth;
+	private int m_birthdayYear;
+	private boolean m_sex;
 	
 	/**
-	* Constructor for a new player without previous games
+	* Constructor for a new player
 	*/
-	public Player (String firstName, String surname, int age)
+	public Player (int newID, String firstName, String lastName, int birthdayDay, int birthdayMonth, int birthdayYear, boolean sex)
 	{
-	}
-	
-	/**
-	* Constructor for a new player with previous games
-	*/
-	public Player (String firstName, String surname, int age, Vector games, int[] values)
-	{
+		m_ID = newID;
+		m_firstName = firstName;
+		m_lastName = lastName;
+		m_birthdayDay = birthdayDay;
+		m_birthdayMonth = birthdayMonth;
+		m_birthdayYear = birthdayYear;
+		m_sex = sex;
 	}
 }

@@ -27,7 +27,7 @@ public class AddPlayer extends HttpServlet
 		out.println("Geboren am " + request.getParameter ("birthday_day") + "." + request.getParameter ("birthday_month") + "." + request.getParameter ("birthday_year") + " wurde der Datenbank hinzugefügt.");
 
 		// Add Player to database
-		
+		myData.addPlayer(request.getParameter("first_name"), request.getParameter("last_name"), 1, 1, 1977, true);
 	}
 
 	public void destroy()

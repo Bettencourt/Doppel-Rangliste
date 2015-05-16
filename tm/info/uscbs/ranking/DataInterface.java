@@ -1,5 +1,7 @@
 package tm.info.uscbs.ranking;
 
+import java.util.Vector;
+
 interface DataInterface
 {
 	/**
