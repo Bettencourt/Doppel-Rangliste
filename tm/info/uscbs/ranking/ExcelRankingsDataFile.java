@@ -25,12 +25,22 @@ class ExcelRankingsDataFile implements DataInterface
 	*/
 	public ExcelRankingsDataFile ()
 	{
+		initializeFileConnection();
+	}
+
+	private void initializeFileConnection()
+	{
+		// if the file connection is closed, open it
 		try
 		{
-			rankingsDataWorkbook = Workbook.createWorkbook(new File("DoppelRangliste.xls")); 
+			// read Workbook File
+			Workbook workbook = Workbook.getWorkbook(new File("DoppelRangliste.xls"));
+			
+			// Create writable copy
+			rankingsDataWorkbook = Workbook.createWorkbook(new File("DoppelRangliste.xls"), workbook); 
 			
 			// the playersSheet must already exist, so set the variable the the existing players sheet
-			playersSheet = rankingsDataWorkbook.createSheet("Spieler", 0); 
+			playersSheet = rankingsDataWorkbook.getSheet("Spieler"); 
 		}
 		catch (Exception ex)
 		{
@@ -67,10 +77,14 @@ class ExcelRankingsDataFile implements DataInterface
 		
 		try
 		{
-			// Go to the Players Tab
+			initializeFileConnection();
+			
+			// Check weather the given player already exists
 			// Find the last line
+			zeile = playersSheet.getRows();
+			
 			// Find out the new ID
-			newID = -1;
+			newID = playersSheet.getRows();
 			
 			// Initialy write Headers into the columns
 			/*
@@ -96,10 +110,8 @@ class ExcelRankingsDataFile implements DataInterface
 			playersSheet.addCell(labelSex);
 			*/
 			
-			zeile++;
-			
 			// Write Player Data into the columns
-			jxl.write.Number numberPlayerID = new jxl.write.Number(COLUMN_ID, zeile, 1);
+			jxl.write.Number numberPlayerID = new jxl.write.Number(COLUMN_ID, zeile, newID);
 			playersSheet.addCell(numberPlayerID);
 			
 			Label labelPlayerFirstName = new Label(COLUMN_FIRST_NAME, zeile, firstName);
@@ -145,5 +157,21 @@ class ExcelRankingsDataFile implements DataInterface
 	public Vector getAllGames()
 	{
 		return new Vector();
+	}
+	
+	public void finalize() throws Throwable
+	{
+		try
+		{
+			rankingsDataWorkbook.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			super.finalize();
+		}	
 	}
 }
