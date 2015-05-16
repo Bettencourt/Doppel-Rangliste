@@ -9,6 +9,14 @@ import jxl.write.*;
 
 class ExcelRankingsDataFile implements DataInterface
 {
+	public static final int COLUMN_ID = 0;
+	public static final int COLUMN_FIRST_NAME = 1;
+	public static final int COLUMN_LAST_NAME = 2;
+	public static final int COLUMN_BIRTHDAY_DAY = 3;
+	public static final int COLUMN_BIRTHDAY_MONTH = 4;
+	public static final int COLUMN_BIRTHDAY_YEAR = 5;
+	public static final int COLUMN_SEX = 6;	
+
 	private WritableWorkbook rankingsDataWorkbook;
 	private WritableSheet playersSheet;
 	
@@ -55,6 +63,7 @@ class ExcelRankingsDataFile implements DataInterface
 	public Player addPlayer (String firstName, String lastName, int birthdayDay, int birthdayMonth, int birthdayYear, boolean sex)
 	{
 		int newID = -1;
+		int zeile = 0;
 		
 		try
 		{
@@ -63,12 +72,53 @@ class ExcelRankingsDataFile implements DataInterface
 			// Find out the new ID
 			newID = -1;
 			
-			// Write Player Data into the columns
-			Label label = new Label(0, 2, "A label record");
-			playersSheet.addCell(label);
+			// Initialy write Headers into the columns
+			/*
+			Label labelID = new Label(COLUMN_ID, zeile, "ID");
+			playersSheet.addCell(labelID);
 
-			jxl.write.Number number = new jxl.write.Number(3, 4, 3.1459);
-			playersSheet.addCell(number); 
+			Label labelFirstName = new Label(COLUMN_FIRST_NAME, zeile, "Vorname");
+			playersSheet.addCell(labelFirstName);
+
+			Label labelLastName = new Label(COLUMN_LAST_NAME, zeile, "Nachname");
+			playersSheet.addCell(labelLastName);
+
+			Label labelBirthdayDay = new Label(COLUMN_BIRTHDAY_DAY, zeile, "Tag");
+			playersSheet.addCell(labelBirthdayDay);
+
+			Label labelBirthdayMonth = new Label(COLUMN_BIRTHDAY_MONTH, zeile, "Monat");
+			playersSheet.addCell(labelBirthdayMonth);
+
+			Label labelBirthdayYear = new Label(COLUMN_BIRTHDAY_YEAR, zeile, "Jahr");
+			playersSheet.addCell(labelBirthdayYear);
+
+			Label labelSex = new Label(COLUMN_SEX, zeile, "Geschlecht");
+			playersSheet.addCell(labelSex);
+			*/
+			
+			zeile++;
+			
+			// Write Player Data into the columns
+			jxl.write.Number numberPlayerID = new jxl.write.Number(COLUMN_ID, zeile, 1);
+			playersSheet.addCell(numberPlayerID);
+			
+			Label labelPlayerFirstName = new Label(COLUMN_FIRST_NAME, zeile, firstName);
+			playersSheet.addCell(labelPlayerFirstName);
+
+			Label labelPlayerLastName = new Label(COLUMN_LAST_NAME, zeile, lastName);
+			playersSheet.addCell(labelPlayerLastName);
+
+			jxl.write.Number numberBirthdayDay = new jxl.write.Number(COLUMN_BIRTHDAY_DAY, zeile, birthdayDay);
+			playersSheet.addCell(numberBirthdayDay);
+			
+			jxl.write.Number numberBirthdayMonth = new jxl.write.Number(COLUMN_BIRTHDAY_MONTH, zeile, birthdayMonth);
+			playersSheet.addCell(numberBirthdayMonth);
+			
+			jxl.write.Number numberBirthdayYear = new jxl.write.Number(COLUMN_BIRTHDAY_YEAR, zeile, birthdayYear);
+			playersSheet.addCell(numberBirthdayYear);
+			
+			jxl.write.Number numberSex = new jxl.write.Number(COLUMN_SEX, zeile, sex?1:0);
+			playersSheet.addCell(numberSex);			
 			
 			rankingsDataWorkbook.write();
 			rankingsDataWorkbook.close();
