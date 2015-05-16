@@ -3,17 +3,28 @@ package tm.info.uscbs.ranking;
 interface DataInterface
 {
 	/**
-	* @param playerName A String representation of the Player whos value should be returned
-	* @returns The Value (in Points) of the given Player
+	* Returns a specified player from the database
+	*
+	* @param playerID The unique identifier of the player to be returned
+	* @returns The player object representation of the player with the given ID
 	*/
-	public int getPlayerValue (String playerName);
+	public Player getPlayer (int playerID);
 	
 	/**
-	* @param playerName A String representation of the Player whos value should be returned
-	* @returns The position in the ranking the given player is currently at
+	* Adds a new player to the database
+	*
+	* @param firstName the first name of the player to be added to the database
+	* @param lastName the last name of the player to be added to the database
+	* @param birthdayDay the day of month of the birthday of the player to be added to the database
+	* @param birthdayMonth the month of birth of the player to be added to the database
+	* @param birthdayYear the year of birth of the player to be added to the database
+	* @param sex true if the player is male, false otherwise
+	* @retruns The new Player object representing the new given player
 	*/
-	public int getPlayerPosition (String playerName);
+	public Player addPlayer (String firstName, String lastName, int birthdayDay, int birthdayMonth, int birthdayYear, boolean sex);
 	
-	public boolean addPlayerValue (int newPlayerValue);
-	public String getHTMLRankingRepresentation();
+	public boolean addPlayerValue (int playerID, int newPlayerValue);
+	
+	public Vector getAllPlayers();
+	public Vector getAllGames();
 }
