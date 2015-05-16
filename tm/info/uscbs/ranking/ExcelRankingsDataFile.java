@@ -7,7 +7,7 @@ import java.util.Vector;
 import jxl.Workbook;
 import jxl.write.*;
 
-class ExcelRankingsDataFile implements DataInterface
+public class ExcelRankingsDataFile implements DataInterface
 {
 	public static final int COLUMN_ID = 0;
 	public static final int COLUMN_FIRST_NAME = 1;
@@ -149,14 +149,14 @@ class ExcelRankingsDataFile implements DataInterface
 		return true;
 	}
 	
-	public Vector getAllPlayers()
+	public Vector<Player> getAllPlayers()
 	{
-		return new Vector();
+		return new Vector<Player>();
 	}
 	
-	public Vector getAllGames()
+	public Vector<Match> getAllMaches()
 	{
-		return new Vector();
+		return new Vector<Match>();
 	}
 	
 	public void finalize() throws Throwable

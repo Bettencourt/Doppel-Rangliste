@@ -2,7 +2,7 @@ package tm.info.uscbs.ranking;
 
 import java.util.Vector;
 
-interface DataInterface
+public interface DataInterface
 {
 	/**
 	* Returns a specified player from the database
@@ -27,6 +27,6 @@ interface DataInterface
 	
 	public boolean addPlayerValue (int playerID, int newPlayerValue);
 	
-	public Vector getAllPlayers();
-	public Vector getAllGames();
+	public Vector<Player> getAllPlayers();
+	public Vector<Match> getAllMaches();
 }

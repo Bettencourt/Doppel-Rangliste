@@ -8,7 +8,7 @@ import javax.servlet.http.*;
 public class Ranking extends HttpServlet
 {
 	// The players of the ranking
-	private Vector players;
+	private Vector<Player> players;
 	
 	/**
 	* Initialization of the servlet. Loads Database connection or data from files.
