@@ -1,6 +1,6 @@
-<%! import tm.info.uscbs.ranking.*; %>
-<%! import java.util.Iterator; %>
-<% DataInterface myData = new ExcelRankingsDataFile(); %>
+<%@ page import="tm.info.uscbs.ranking.*" %>
+<%@ page import="java.util.Iterator" %>
+<%! DataInterface myData = new ExcelRankingsDataFile(); %>
  
 <html>
 <head>
@@ -11,11 +11,11 @@
 	<form action="AddDoubles" method="POST">
 		<HR2>Team 1</hr2>
 		Player 1 <select name="player1team1">
-		<% Iterator playerIterator = myData.getAllPlayers().iterator(); %>
-		<% while (playerIterator.hasNext()) %>
+		<%Iterator playerIterator = myData.getAllPlayers().iterator();%>
+		<%while (playerIterator.hasNext())%>
 		<%{%>
-			<% Player nextPlayer = (Player)playerIterator.next(); %>
-			<option value="<%= nextPlayer.getID() %>"><%= nextPlayer.getFullName() %></option>
+			<%Player nextPlayer = (Player)playerIterator.next();%>
+			<option value="<%=nextPlayer.getID()%>"><%=nextPlayer.getFullName()%></option>
 		<%}%>
 		</select>
 		<br />
