@@ -65,7 +65,7 @@
 				%>
 				</select>
 				<br />
-				Player 2: <select name="player1team2">
+				Player 2: <select name="player2team2">
 				<%
 				playerIterator = playerVector.iterator();
 				
