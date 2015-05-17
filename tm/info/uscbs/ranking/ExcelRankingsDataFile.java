@@ -2,6 +2,7 @@ package tm.info.uscbs.ranking;
 
 import java.io.IOException;
 import java.io.File;
+import java.util.Iterator;
 import java.util.Vector;
 
 import jxl.Cell;
@@ -130,7 +131,18 @@ public class ExcelRankingsDataFile implements DataInterface
 	*/
 	public Player getPlayer (int playerID)
 	{
-		return new Player(-1, "Max", "Mustermann", -1, -1, -1, false);
+		Iterator<Player> allPlayers = getAllPlayers().iterator();
+		Player nextPlayer = null;
+		
+		while (allPlayers.hasNext())
+		{
+			nextPlayer = allPlayers.next();
+			
+			if (nextPlayer.getID() == playerID)
+				return nextPlayer;
+		}
+		
+		return null;
 	}
 	
 	/**
@@ -217,6 +229,11 @@ public class ExcelRankingsDataFile implements DataInterface
 		// Create and return new Player object
 		return new Player (newID, firstName, lastName, birthdayDay, birthdayMonth, birthdayYear, sex);
 	}	
+	
+	public DoublesMatch addDoublesMatch (int player1team1ID, int player2team1ID, int player1team2ID, int player2team2ID, int pointsTeam1Set1, int pointsTeam2Set1, int pointsTeam1Set2, int pointsTeam2Set2, int pointsTeam1Set3, int pointsTeam2Set3)
+	{
+		return new DoublesMatch();
+	}
 	
 	public boolean addPlayerValue (int playerID, int newPlayerValue)
 	{

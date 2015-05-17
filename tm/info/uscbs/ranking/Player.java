@@ -29,6 +29,11 @@ public class Player
 		return m_firstName;
 	}
 	
+	public String getLastName()
+	{
+		return m_lastName;
+	}
+	
 	public String getFullName()
 	{
 		return m_firstName + " " + m_lastName;

@@ -25,6 +25,8 @@ public interface DataInterface
 	*/
 	public Player addPlayer (String firstName, String lastName, int birthdayDay, int birthdayMonth, int birthdayYear, boolean sex);
 	
+	public DoublesMatch addDoublesMatch (int player1team1ID, int player2team1ID, int player1team2ID, int player2team2ID, int pointsTeam1Set1, int pointsTeam2Set1, int pointsTeam1Set2, int pointsTeam2Set2, int pointsTeam1Set3, int pointsTeam2Set3);
+	
 	public boolean addPlayerValue (int playerID, int newPlayerValue);
 	
 	public Vector<Player> getAllPlayers();

@@ -36,10 +36,10 @@ public class AddDoubles extends HttpServlet
 		
 		// give Feedback to the user
 		PrintWriter out = response.getWriter();
-		out.println("Doppel zwischen " /* + birthdayDay + "/" + birthdayMonth + " und " + birthdayYear + "/" + */ + " wurde der Datenbank hinzugefügt.");
+		out.println("Doppel zwischen " + myData.getPlayer(player1team1ID).getLastName() + "/" + myData.getPlayer(player2team1ID).getLastName() + " und " + myData.getPlayer(player1team2ID).getLastName() + "/" + myData.getPlayer(player2team2ID).getLastName() + " wurde der Datenbank hinzugefügt.");
 
 		// Add Player to database
-		myData.addDoublesMatch();
+		myData.addDoublesMatch(player1team1ID, player2team1ID, player1team2ID, player2team2ID, pointsTeam1set1, pointsTeam1set1, pointsTeam1set2, pointsTeam2set2, pointsTeam1set3, pointsTeam2set3);
 	}
 
 	public void destroy()
