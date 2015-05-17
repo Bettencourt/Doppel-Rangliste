@@ -12,6 +12,7 @@ import jxl.write.*;
 
 public class ExcelRankingsDataFile implements DataInterface
 {
+	// Constants of column-numbers for players sheet
 	public static final int COLUMN_ID = 0;
 	public static final int COLUMN_FIRST_NAME = 1;
 	public static final int COLUMN_LAST_NAME = 2;
@@ -20,11 +21,25 @@ public class ExcelRankingsDataFile implements DataInterface
 	public static final int COLUMN_BIRTHDAY_YEAR = 5;
 	public static final int COLUMN_SEX = 6;	
 
+	// Constants of column-numbers for doubles sheet
+	public static final int COLUMN_PLAYER1_TEAM1 = 1;
+	public static final int COLUMN_PLAYER2_TEAM1 = 2;
+	public static final int COLUMN_PLAYER1_TEAM2 = 3;
+	public static final int COLUMN_PLAYER2_TEAM2 = 4;
+	public static final int COLUMN_POINTS_TEAM1_SET1 = 5;
+	public static final int COLUMN_POINTS_TEAM2_SET1 = 6;
+	public static final int COLUMN_POINTS_TEAM1_SET2 = 7;
+	public static final int COLUMN_POINTS_TEAM2_SET2 = 8;
+	public static final int COLUMN_POINTS_TEAM1_SET3 = 9;
+	public static final int COLUMN_POINTS_TEAM2_SET3 = 10;
+	
 	private WritableWorkbook rankingsDataWritableWorkbook;
 	private WritableSheet playersWritableSheet;
+	private WritableSheet doublesWritableSheet;
 	
 	private Workbook rankingsDataReadableWorkbook;
 	private Sheet playersReadableSheet;
+	private Sheet doublesReadableSheet;
 	
 	/**
 	* Open the Workbook.
@@ -45,12 +60,14 @@ public class ExcelRankingsDataFile implements DataInterface
 				
 				// get the players sheet
 				playersReadableSheet = rankingsDataReadableWorkbook.getSheet("Spieler");
+				doublesReadableSheet = rankingsDataReadableWorkbook.getSheet("Doppel-Begegnungen");
 				
 				// Create writable copy
 				rankingsDataWritableWorkbook = Workbook.createWorkbook(new File("DoppelRangliste.xls"), rankingsDataReadableWorkbook); 
 				
 				// the playersWritableSheet must already exist, so set the variable the the existing players sheet
-				playersWritableSheet = rankingsDataWritableWorkbook.getSheet("Spieler"); 
+				playersWritableSheet = rankingsDataWritableWorkbook.getSheet("Spieler");
+				doublesWritableSheet = rankingsDataWritableWorkbook.getSheet("Doppel-Begegnungen");
 			}
 			catch (Exception ex)
 			{
@@ -71,6 +88,7 @@ public class ExcelRankingsDataFile implements DataInterface
 				
 				// get the players sheet
 				playersReadableSheet = rankingsDataReadableWorkbook.getSheet("Spieler");
+				doublesReadableSheet = rankingsDataReadableWorkbook.getSheet("Doppel-Begegnungen");
 			}
 			catch (Exception ex)
 			{
@@ -90,7 +108,9 @@ public class ExcelRankingsDataFile implements DataInterface
 				rankingsDataWritableWorkbook = null;
 				rankingsDataReadableWorkbook = null;
 				playersWritableSheet = null;
-				playersReadableSheet = null;			
+				playersReadableSheet = null;
+				doublesWritableSheet = null;
+				doublesReadableSheet = null;
 			}
 			catch (Exception ex)
 			{
@@ -113,7 +133,8 @@ public class ExcelRankingsDataFile implements DataInterface
 				{
 					rankingsDataReadableWorkbook.close();
 					rankingsDataReadableWorkbook = null;
-					playersReadableSheet = null;			
+					playersReadableSheet = null;
+					doublesReadableSheet = null;
 				}
 			}
 			catch (Exception ex)
@@ -232,6 +253,54 @@ public class ExcelRankingsDataFile implements DataInterface
 	
 	public DoublesMatch addDoublesMatch (int player1team1ID, int player2team1ID, int player1team2ID, int player2team2ID, int pointsTeam1Set1, int pointsTeam2Set1, int pointsTeam1Set2, int pointsTeam2Set2, int pointsTeam1Set3, int pointsTeam2Set3)
 	{
+		try
+		{
+			initializeWritingFileConnection();
+
+			// Initialy write Headers into the columns
+			/*
+			Label labelID = new Label(COLUMN_ID, 0, "ID");
+			doublesWritableSheet.addCell(labelID);
+
+			Label labelPlayer1Team1 = new Label(COLUMN_PLAYER1_TEAM1, 0, "Spieler 1, Team 1");
+			doublesWritableSheet.addCell(labelPlayer1Team1);
+
+			Label labelPlayer2Team1 = new Label(COLUMN_PLAYER2_TEAM1, 0, "Spieler 2, Team 2");
+			doublesWritableSheet.addCell(labelPlayer2Team1);
+
+			Label labelPlayer1Team2 = new Label(COLUMN_PLAYER1_TEAM2, 0, "Spieler 1, Team 2");
+			doublesWritableSheet.addCell(labelPlayer1Team2);
+
+			Label labelPlayer2Team2 = new Label(COLUMN_PLAYER2_TEAM2, 0, "Spieler 2, Team 2");
+			doublesWritableSheet.addCell(labelPlayer2Team2);
+
+			Label labelPointsTeam1Set1 = new Label(COLUMN_POINTS_TEAM1_SET1, 0, "Punkte Team 1, Satz 1");
+			doublesWritableSheet.addCell(labelPointsTeam1Set1);
+
+			Label labelPointsTeam2Set1 = new Label(COLUMN_POINTS_TEAM2_SET1, 0, "Punkte Team 2, Satz 1");
+			doublesWritableSheet.addCell(labelPointsTeam2Set1);
+
+			Label labelPointsTeam1Set2 = new Label(COLUMN_POINTS_TEAM1_SET2, 0, "Punkte Team 1, Satz 2");
+			doublesWritableSheet.addCell(labelPointsTeam1Set2);
+
+			Label labelPointsTeam2Set2 = new Label(COLUMN_POINTS_TEAM2_SET2, 0, "Punkte Team 2, Satz 2");
+			doublesWritableSheet.addCell(labelPointsTeam2Set2);
+
+			Label labelPointsTeam1Set3 = new Label(COLUMN_POINTS_TEAM1_SET3, 0, "Punkte Team 1, Satz 3");
+			doublesWritableSheet.addCell(labelPointsTeam1Set3);
+
+			Label labelPointsTeam2Set3 = new Label(COLUMN_POINTS_TEAM2_SET3, 0, "Punkte Team 2, Satz 3");
+			doublesWritableSheet.addCell(labelPointsTeam2Set3);
+			*/
+			
+			rankingsDataWritableWorkbook.write();
+			deinitializeWritingFileConnection();
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		
 		return new DoublesMatch();
 	}
 	
