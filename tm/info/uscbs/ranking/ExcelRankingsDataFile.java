@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.File;
 import java.util.Vector;
 
+import jxl.Cell;
+import jxl.Sheet;
 import jxl.Workbook;
 import jxl.write.*;
 
@@ -17,34 +19,106 @@ public class ExcelRankingsDataFile implements DataInterface
 	public static final int COLUMN_BIRTHDAY_YEAR = 5;
 	public static final int COLUMN_SEX = 6;	
 
-	private WritableWorkbook rankingsDataWorkbook;
-	private WritableSheet playersSheet;
+	private WritableWorkbook rankingsDataWritableWorkbook;
+	private WritableSheet playersWritableSheet;
+	
+	private Workbook rankingsDataReadableWorkbook;
+	private Sheet playersReadableSheet;
 	
 	/**
 	* Open the Workbook.
 	*/
 	public ExcelRankingsDataFile ()
 	{
-		initializeFileConnection();
 	}
 
-	private void initializeFileConnection()
+	private void initializeWritingFileConnection()
 	{
 		// if the file connection is closed, open it
-		try
+		if (rankingsDataWritableWorkbook == null)
 		{
-			// read Workbook File
-			Workbook workbook = Workbook.getWorkbook(new File("DoppelRangliste.xls"));
-			
-			// Create writable copy
-			rankingsDataWorkbook = Workbook.createWorkbook(new File("DoppelRangliste.xls"), workbook); 
-			
-			// the playersSheet must already exist, so set the variable the the existing players sheet
-			playersSheet = rankingsDataWorkbook.getSheet("Spieler"); 
+			try
+			{
+				// read Workbook File
+				rankingsDataReadableWorkbook = Workbook.getWorkbook(new File("DoppelRangliste.xls"));
+				
+				// get the players sheet
+				playersReadableSheet = rankingsDataReadableWorkbook.getSheet("Spieler");
+				
+				// Create writable copy
+				rankingsDataWritableWorkbook = Workbook.createWorkbook(new File("DoppelRangliste.xls"), rankingsDataReadableWorkbook); 
+				
+				// the playersWritableSheet must already exist, so set the variable the the existing players sheet
+				playersWritableSheet = rankingsDataWritableWorkbook.getSheet("Spieler"); 
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
 		}
-		catch (Exception ex)
+	}
+
+	private void initializeReadingFileConnection()
+	{
+		// if the file connection is closed, open it
+		if (rankingsDataReadableWorkbook == null)
 		{
-			ex.printStackTrace();
+			try
+			{
+				// read Workbook File
+				rankingsDataReadableWorkbook = Workbook.getWorkbook(new File("DoppelRangliste.xls"));
+				
+				// get the players sheet
+				playersReadableSheet = rankingsDataReadableWorkbook.getSheet("Spieler");
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	private void deinitializeWritingFileConnection()
+	{
+		if (rankingsDataWritableWorkbook != null)
+		{
+			try
+			{
+				rankingsDataWritableWorkbook.close();
+				rankingsDataReadableWorkbook.close();
+				rankingsDataWritableWorkbook = null;
+				rankingsDataReadableWorkbook = null;
+				playersWritableSheet = null;
+				playersReadableSheet = null;			
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
+		}
+	}
+	
+	private void deinitializeReadingFileConnection()
+	{
+		if (rankingsDataReadableWorkbook != null)
+		{
+			try
+			{
+				if (rankingsDataWritableWorkbook != null)
+				{
+					deinitializeWritingFileConnection();
+				}
+				else
+				{
+					rankingsDataReadableWorkbook.close();
+					rankingsDataReadableWorkbook = null;
+					playersReadableSheet = null;			
+				}
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+			}
 		}
 	}
 	
@@ -77,63 +151,63 @@ public class ExcelRankingsDataFile implements DataInterface
 		
 		try
 		{
-			initializeFileConnection();
+			initializeWritingFileConnection();
 			
 			// Check weather the given player already exists
 			// Find the last line
-			zeile = playersSheet.getRows();
+			zeile = playersWritableSheet.getRows();
 			
 			// Find out the new ID
-			newID = playersSheet.getRows();
+			newID = playersWritableSheet.getRows();
 			
 			// Initialy write Headers into the columns
 			/*
 			Label labelID = new Label(COLUMN_ID, zeile, "ID");
-			playersSheet.addCell(labelID);
+			playersWritableSheet.addCell(labelID);
 
 			Label labelFirstName = new Label(COLUMN_FIRST_NAME, zeile, "Vorname");
-			playersSheet.addCell(labelFirstName);
+			playersWritableSheet.addCell(labelFirstName);
 
 			Label labelLastName = new Label(COLUMN_LAST_NAME, zeile, "Nachname");
-			playersSheet.addCell(labelLastName);
+			playersWritableSheet.addCell(labelLastName);
 
 			Label labelBirthdayDay = new Label(COLUMN_BIRTHDAY_DAY, zeile, "Tag");
-			playersSheet.addCell(labelBirthdayDay);
+			playersWritableSheet.addCell(labelBirthdayDay);
 
 			Label labelBirthdayMonth = new Label(COLUMN_BIRTHDAY_MONTH, zeile, "Monat");
-			playersSheet.addCell(labelBirthdayMonth);
+			playersWritableSheet.addCell(labelBirthdayMonth);
 
 			Label labelBirthdayYear = new Label(COLUMN_BIRTHDAY_YEAR, zeile, "Jahr");
-			playersSheet.addCell(labelBirthdayYear);
+			playersWritableSheet.addCell(labelBirthdayYear);
 
 			Label labelSex = new Label(COLUMN_SEX, zeile, "Geschlecht");
-			playersSheet.addCell(labelSex);
+			playersWritableSheet.addCell(labelSex);
 			*/
 			
 			// Write Player Data into the columns
 			jxl.write.Number numberPlayerID = new jxl.write.Number(COLUMN_ID, zeile, newID);
-			playersSheet.addCell(numberPlayerID);
+			playersWritableSheet.addCell(numberPlayerID);
 			
 			Label labelPlayerFirstName = new Label(COLUMN_FIRST_NAME, zeile, firstName);
-			playersSheet.addCell(labelPlayerFirstName);
+			playersWritableSheet.addCell(labelPlayerFirstName);
 
 			Label labelPlayerLastName = new Label(COLUMN_LAST_NAME, zeile, lastName);
-			playersSheet.addCell(labelPlayerLastName);
+			playersWritableSheet.addCell(labelPlayerLastName);
 
 			jxl.write.Number numberBirthdayDay = new jxl.write.Number(COLUMN_BIRTHDAY_DAY, zeile, birthdayDay);
-			playersSheet.addCell(numberBirthdayDay);
+			playersWritableSheet.addCell(numberBirthdayDay);
 			
 			jxl.write.Number numberBirthdayMonth = new jxl.write.Number(COLUMN_BIRTHDAY_MONTH, zeile, birthdayMonth);
-			playersSheet.addCell(numberBirthdayMonth);
+			playersWritableSheet.addCell(numberBirthdayMonth);
 			
 			jxl.write.Number numberBirthdayYear = new jxl.write.Number(COLUMN_BIRTHDAY_YEAR, zeile, birthdayYear);
-			playersSheet.addCell(numberBirthdayYear);
+			playersWritableSheet.addCell(numberBirthdayYear);
 			
 			jxl.write.Number numberSex = new jxl.write.Number(COLUMN_SEX, zeile, sex?1:0);
-			playersSheet.addCell(numberSex);			
+			playersWritableSheet.addCell(numberSex);			
 			
-			rankingsDataWorkbook.write();
-			rankingsDataWorkbook.close();
+			rankingsDataWritableWorkbook.write();
+			deinitializeWritingFileConnection();
 		}		
 		catch (Exception ex)
 		{
@@ -151,7 +225,51 @@ public class ExcelRankingsDataFile implements DataInterface
 	
 	public Vector<Player> getAllPlayers()
 	{
-		return new Vector<Player>();
+		Vector<Player> allPlayerVector = new Vector<Player>();
+		
+		int numberOfPlayers = 0;
+		
+		try
+		{
+			initializeReadingFileConnection();
+			
+			numberOfPlayers = playersReadableSheet.getRows() - 1;
+			
+			System.out.println ("There are " + numberOfPlayers + " players in the players list");
+			
+			for (int currentPlayer=1; currentPlayer <= numberOfPlayers;currentPlayer++)
+			{
+				Cell a1 = playersReadableSheet.getCell(COLUMN_ID, currentPlayer);
+				Cell a2 = playersReadableSheet.getCell(COLUMN_FIRST_NAME, currentPlayer);
+				Cell a3 = playersReadableSheet.getCell(COLUMN_LAST_NAME, currentPlayer);
+				Cell a4 = playersReadableSheet.getCell(COLUMN_BIRTHDAY_DAY, currentPlayer);
+				Cell a5 = playersReadableSheet.getCell(COLUMN_BIRTHDAY_MONTH, currentPlayer);
+				Cell a6 = playersReadableSheet.getCell(COLUMN_BIRTHDAY_YEAR, currentPlayer);
+				Cell a7 = playersReadableSheet.getCell(COLUMN_SEX, currentPlayer);
+			
+				int playerID = Integer.parseInt(a1.getContents());
+				String playerFirstName = a2.getContents();
+				String playerLastName = a3.getContents();
+				int playerBirthdayDay = Integer.parseInt(a4.getContents());
+				int playerBirthdayMonth = Integer.parseInt(a5.getContents());
+				int playerBirthdayYear = Integer.parseInt(a6.getContents());
+				boolean playerSex = Integer.parseInt(a7.getContents())!= 0?true:false;
+				
+				allPlayerVector.add (new Player(playerID, playerFirstName, playerLastName, playerBirthdayDay, playerBirthdayMonth, playerBirthdayYear, playerSex));
+				
+				System.out.println ("Added Player Nr. " + currentPlayer + " (" + playerFirstName + " " + playerLastName + ") to player vector");
+			}
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			deinitializeReadingFileConnection();
+		}
+		
+		return allPlayerVector;
 	}
 	
 	public Vector<Match> getAllMaches()
@@ -163,7 +281,7 @@ public class ExcelRankingsDataFile implements DataInterface
 	{
 		try
 		{
-			rankingsDataWorkbook.close();
+			rankingsDataWritableWorkbook.close();
 		}
 		catch (Exception e)
 		{
