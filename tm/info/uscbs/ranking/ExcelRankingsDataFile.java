@@ -235,8 +235,6 @@ public class ExcelRankingsDataFile implements DataInterface
 			
 			numberOfPlayers = playersReadableSheet.getRows() - 1;
 			
-			System.out.println ("There are " + numberOfPlayers + " players in the players list");
-			
 			for (int currentPlayer=1; currentPlayer <= numberOfPlayers;currentPlayer++)
 			{
 				Cell a1 = playersReadableSheet.getCell(COLUMN_ID, currentPlayer);
@@ -256,8 +254,6 @@ public class ExcelRankingsDataFile implements DataInterface
 				boolean playerSex = Integer.parseInt(a7.getContents())!= 0?true:false;
 				
 				allPlayerVector.add (new Player(playerID, playerFirstName, playerLastName, playerBirthdayDay, playerBirthdayMonth, playerBirthdayYear, playerSex));
-				
-				System.out.println ("Added Player Nr. " + currentPlayer + " (" + playerFirstName + " " + playerLastName + ") to player vector");
 			}
 		}
 		catch (Exception ex)
@@ -275,21 +271,5 @@ public class ExcelRankingsDataFile implements DataInterface
 	public Vector<Match> getAllMaches()
 	{
 		return new Vector<Match>();
-	}
-	
-	public void finalize() throws Throwable
-	{
-		try
-		{
-			rankingsDataWritableWorkbook.close();
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			super.finalize();
-		}	
-	}
+	}	
 }
