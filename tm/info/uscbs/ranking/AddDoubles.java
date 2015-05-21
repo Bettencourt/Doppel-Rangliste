@@ -34,8 +34,12 @@ public class AddDoubles extends HttpServlet
 		int pointsTeam1set3 = Integer.parseInt(request.getParameter ("points_team1_set3"));
 		int pointsTeam2set3 = Integer.parseInt(request.getParameter ("points_team2_set3"));
 
-		// Add Player to database
-		myData.addDoublesMatch(player1team1ID, player2team1ID, player1team2ID, player2team2ID, pointsTeam1set1, pointsTeam1set1, pointsTeam1set2, pointsTeam2set2, pointsTeam1set3, pointsTeam2set3);
+		// ToDo: Check points in sets for plausibility
+		
+		// Add match to database
+		myData.addDoublesMatch(player1team1ID, player2team1ID, player1team2ID, player2team2ID, pointsTeam1set1, pointsTeam2set1, pointsTeam1set2, pointsTeam2set2, pointsTeam1set3, pointsTeam2set3);
+		
+		// ToDo: Recalculate rankings
 		
 		// give Feedback to the user
 		PrintWriter out = response.getWriter();

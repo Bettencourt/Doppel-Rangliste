@@ -33,13 +33,26 @@ public class ExcelRankingsDataFile implements DataInterface
 	public static final int COLUMN_POINTS_TEAM1_SET3 = 9;
 	public static final int COLUMN_POINTS_TEAM2_SET3 = 10;
 	
+	// Constants of column-numbers for rankings sheet
+	public static final int COLUMN_RANK = 0;
+	public static final int COLUMN_RANK_VALUE = 1;
+	public static final int COLUMN_RANKING_PLAYER_ID = 2;
+	public static final int COLUMN_RANKING_PLAYER_POINTS_SUM = 3;
+	public static final int COLUMN_RANKING_PLAYER_POINTS_GAME1 = 4;
+	public static final int COLUMN_RANKING_PLAYER_POINTS_GAME2 = 5;
+	public static final int COLUMN_RANKING_PLAYER_POINTS_GAME3 = 6;
+	public static final int COLUMN_RANKING_PLAYER_POINTS_GAME4 = 7;
+	public static final int COLUMN_RANKING_PLAYER_POINTS_GAME5 = 8;
+	
 	private WritableWorkbook rankingsDataWritableWorkbook;
 	private WritableSheet playersWritableSheet;
 	private WritableSheet doublesWritableSheet;
+	private WritableSheet rankingsWritableSheet;
 	
 	private Workbook rankingsDataReadableWorkbook;
 	private Sheet playersReadableSheet;
 	private Sheet doublesReadableSheet;
+	private Sheet rankingsReadableSheet;
 	
 	/**
 	* Open the Workbook.
@@ -68,6 +81,7 @@ public class ExcelRankingsDataFile implements DataInterface
 				// the playersWritableSheet must already exist, so set the variable the the existing players sheet
 				playersWritableSheet = rankingsDataWritableWorkbook.getSheet("Spieler");
 				doublesWritableSheet = rankingsDataWritableWorkbook.getSheet("Doppel-Begegnungen");
+				rankingsWritableSheet = rankingsDataWritableWorkbook.getSheet("Rangliste");
 			}
 			catch (Exception ex)
 			{
@@ -89,6 +103,7 @@ public class ExcelRankingsDataFile implements DataInterface
 				// get the players sheet
 				playersReadableSheet = rankingsDataReadableWorkbook.getSheet("Spieler");
 				doublesReadableSheet = rankingsDataReadableWorkbook.getSheet("Doppel-Begegnungen");
+				rankingsReadableSheet = rankingsDataReadableWorkbook.getSheet("Rangliste");
 			}
 			catch (Exception ex)
 			{
@@ -111,6 +126,8 @@ public class ExcelRankingsDataFile implements DataInterface
 				playersReadableSheet = null;
 				doublesWritableSheet = null;
 				doublesReadableSheet = null;
+				rankingsWritableSheet = null;
+				rankingsReadableSheet = null;
 			}
 			catch (Exception ex)
 			{
@@ -135,6 +152,7 @@ public class ExcelRankingsDataFile implements DataInterface
 					rankingsDataReadableWorkbook = null;
 					playersReadableSheet = null;
 					doublesReadableSheet = null;
+					rankingsReadableSheet = null;
 				}
 			}
 			catch (Exception ex)
@@ -239,6 +257,9 @@ public class ExcelRankingsDataFile implements DataInterface
 			jxl.write.Number numberSex = new jxl.write.Number(COLUMN_SEX, zeile, sex?1:0);
 			playersWritableSheet.addCell(numberSex);			
 			
+			// ToDo: Add player to rankings
+			addPlayerToRankings (newID);
+			
 			rankingsDataWritableWorkbook.write();
 			deinitializeWritingFileConnection();
 		}		
@@ -297,7 +318,6 @@ public class ExcelRankingsDataFile implements DataInterface
 			*/
 
 			// ToDo: Check weather the given match already exists
-			// ToDo: Check points in sets for plausibility
 			// Find the last line
 			zeile = doublesWritableSheet.getRows();
 			
@@ -338,6 +358,8 @@ public class ExcelRankingsDataFile implements DataInterface
 			jxl.write.Number numberPointsTeam2Set3 = new jxl.write.Number(COLUMN_POINTS_TEAM2_SET3, zeile, pointsTeam2Set3);
 			doublesWritableSheet.addCell(numberPointsTeam2Set3);
 			
+			// ToDo: add doubles match to rankings
+			
 			rankingsDataWritableWorkbook.write();
 			deinitializeWritingFileConnection();
 		}
@@ -347,6 +369,42 @@ public class ExcelRankingsDataFile implements DataInterface
 		}
 		
 		return new DoublesMatch();
+	}
+	
+	private void addPlayerToRankings (int playerID) throws Exception
+	{
+		int row = 0;
+		
+		// Find the last line
+		row = rankingsWritableSheet.getRows();
+		
+		// Write Match Data into the columns
+		jxl.write.Number numberRank = new jxl.write.Number(COLUMN_RANK, row, row);
+		rankingsWritableSheet.addCell(numberRank);
+
+		jxl.write.Number numberRankValue = new jxl.write.Number(COLUMN_RANK_VALUE, row, row*10);
+		rankingsWritableSheet.addCell(numberRankValue);
+
+		jxl.write.Number numberRankingPlayerID = new jxl.write.Number(COLUMN_RANKING_PLAYER_ID, row, playerID);
+		rankingsWritableSheet.addCell(numberRankingPlayerID);
+
+		jxl.write.Number numberRankingPlayerPointsSum = new jxl.write.Number(COLUMN_RANKING_PLAYER_POINTS_SUM, row, row*50);
+		rankingsWritableSheet.addCell(numberRankingPlayerPointsSum);
+
+		jxl.write.Number numberRankingPlayerPointsGame1 = new jxl.write.Number(COLUMN_RANKING_PLAYER_POINTS_GAME1, row, row*10);
+		rankingsWritableSheet.addCell(numberRankingPlayerPointsGame1);
+
+		jxl.write.Number numberRankingPlayerPointsGame2 = new jxl.write.Number(COLUMN_RANKING_PLAYER_POINTS_GAME2, row, row*10);
+		rankingsWritableSheet.addCell(numberRankingPlayerPointsGame2);
+
+		jxl.write.Number numberRankingPlayerPointsGame3 = new jxl.write.Number(COLUMN_RANKING_PLAYER_POINTS_GAME3, row, row*10);
+		rankingsWritableSheet.addCell(numberRankingPlayerPointsGame3);
+
+		jxl.write.Number numberRankingPlayerPointsGame4 = new jxl.write.Number(COLUMN_RANKING_PLAYER_POINTS_GAME4, row, row*10);
+		rankingsWritableSheet.addCell(numberRankingPlayerPointsGame4);
+
+		jxl.write.Number numberRankingPlayerPointsGame5 = new jxl.write.Number(COLUMN_RANKING_PLAYER_POINTS_GAME5, row, row*10);
+		rankingsWritableSheet.addCell(numberRankingPlayerPointsGame5);
 	}
 	
 	public boolean addPlayerValue (int playerID, int newPlayerValue)
