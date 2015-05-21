@@ -186,7 +186,7 @@ public class ExcelRankingsDataFile implements DataInterface
 		{
 			initializeWritingFileConnection();
 			
-			// Check weather the given player already exists
+			// ToDo: Check weather the given player already exists
 			// Find the last line
 			zeile = playersWritableSheet.getRows();
 			
@@ -253,6 +253,9 @@ public class ExcelRankingsDataFile implements DataInterface
 	
 	public DoublesMatch addDoublesMatch (int player1team1ID, int player2team1ID, int player1team2ID, int player2team2ID, int pointsTeam1Set1, int pointsTeam2Set1, int pointsTeam1Set2, int pointsTeam2Set2, int pointsTeam1Set3, int pointsTeam2Set3)
 	{
+		int newID = -1;
+		int zeile = 0;
+		
 		try
 		{
 			initializeWritingFileConnection();
@@ -292,6 +295,48 @@ public class ExcelRankingsDataFile implements DataInterface
 			Label labelPointsTeam2Set3 = new Label(COLUMN_POINTS_TEAM2_SET3, 0, "Punkte Team 2, Satz 3");
 			doublesWritableSheet.addCell(labelPointsTeam2Set3);
 			*/
+
+			// ToDo: Check weather the given match already exists
+			// ToDo: Check points in sets for plausibility
+			// Find the last line
+			zeile = doublesWritableSheet.getRows();
+			
+			// Find out the new ID
+			newID = doublesWritableSheet.getRows();
+			
+			// Write Match Data into the columns
+			jxl.write.Number numberMatchID = new jxl.write.Number(COLUMN_ID, zeile, newID);
+			doublesWritableSheet.addCell(numberMatchID);
+			
+			jxl.write.Number numberPlayer1team1 = new jxl.write.Number(COLUMN_PLAYER1_TEAM1, zeile, player1team1ID);
+			doublesWritableSheet.addCell(numberPlayer1team1);
+
+			jxl.write.Number numberPlayer2team1 = new jxl.write.Number(COLUMN_PLAYER2_TEAM1, zeile, player2team1ID);
+			doublesWritableSheet.addCell(numberPlayer2team1);
+
+			jxl.write.Number numberPlayer1team2 = new jxl.write.Number(COLUMN_PLAYER1_TEAM2, zeile, player1team2ID);
+			doublesWritableSheet.addCell(numberPlayer1team2);
+
+			jxl.write.Number numberPlayer2team2 = new jxl.write.Number(COLUMN_PLAYER2_TEAM2, zeile, player2team2ID);
+			doublesWritableSheet.addCell(numberPlayer2team2);
+
+			jxl.write.Number numberPointsTeam1Set1 = new jxl.write.Number(COLUMN_POINTS_TEAM1_SET1, zeile, pointsTeam1Set1);
+			doublesWritableSheet.addCell(numberPointsTeam1Set1);
+
+			jxl.write.Number numberPointsTeam2Set1 = new jxl.write.Number(COLUMN_POINTS_TEAM2_SET1, zeile, pointsTeam2Set1);
+			doublesWritableSheet.addCell(numberPointsTeam2Set1);
+
+			jxl.write.Number numberPointsTeam1Set2 = new jxl.write.Number(COLUMN_POINTS_TEAM1_SET2, zeile, pointsTeam1Set2);
+			doublesWritableSheet.addCell(numberPointsTeam1Set2);
+
+			jxl.write.Number numberPointsTeam2Set2 = new jxl.write.Number(COLUMN_POINTS_TEAM2_SET2, zeile, pointsTeam2Set2);
+			doublesWritableSheet.addCell(numberPointsTeam2Set2);
+
+			jxl.write.Number numberPointsTeam1Set3 = new jxl.write.Number(COLUMN_POINTS_TEAM1_SET3, zeile, pointsTeam1Set3);
+			doublesWritableSheet.addCell(numberPointsTeam1Set3);
+
+			jxl.write.Number numberPointsTeam2Set3 = new jxl.write.Number(COLUMN_POINTS_TEAM2_SET3, zeile, pointsTeam2Set3);
+			doublesWritableSheet.addCell(numberPointsTeam2Set3);
 			
 			rankingsDataWritableWorkbook.write();
 			deinitializeWritingFileConnection();

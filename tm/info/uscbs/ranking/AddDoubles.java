@@ -33,13 +33,13 @@ public class AddDoubles extends HttpServlet
 		int pointsTeam2set2 = Integer.parseInt(request.getParameter ("points_team2_set2"));
 		int pointsTeam1set3 = Integer.parseInt(request.getParameter ("points_team1_set3"));
 		int pointsTeam2set3 = Integer.parseInt(request.getParameter ("points_team2_set3"));
+
+		// Add Player to database
+		myData.addDoublesMatch(player1team1ID, player2team1ID, player1team2ID, player2team2ID, pointsTeam1set1, pointsTeam1set1, pointsTeam1set2, pointsTeam2set2, pointsTeam1set3, pointsTeam2set3);
 		
 		// give Feedback to the user
 		PrintWriter out = response.getWriter();
 		out.println("Doppel zwischen " + myData.getPlayer(player1team1ID).getLastName() + "/" + myData.getPlayer(player2team1ID).getLastName() + " und " + myData.getPlayer(player1team2ID).getLastName() + "/" + myData.getPlayer(player2team2ID).getLastName() + " wurde der Datenbank hinzugefügt.");
-
-		// Add Player to database
-		myData.addDoublesMatch(player1team1ID, player2team1ID, player1team2ID, player2team2ID, pointsTeam1set1, pointsTeam1set1, pointsTeam1set2, pointsTeam2set2, pointsTeam1set3, pointsTeam2set3);
 	}
 
 	public void destroy()
