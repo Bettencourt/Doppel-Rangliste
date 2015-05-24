@@ -557,6 +557,71 @@ public class ExcelRankingsDataFile implements DataInterface
 	
 	private void reorderRanking()
 	{
+		try
+		{
+			initializeWritingFileConnection();
+
+			// trivial bubble sort
+			// TODO: implement faster algorithm
+			int lastRow = rankingsWritableSheet.getRows();
+		
+			for (int row = 1; row < lastRow-1; row++)
+			{
+				// get the row's player's value
+				int currentPlayersValue = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_SUM, row).getContents());
+				int nextPlayersValue = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_SUM, row + 1).getContents());
+				
+				if (currentPlayersValue > nextPlayersValue)
+				{
+					LOGGER.finest ("Value of player in row " + row + " (" + currentPlayersValue + ") is bigger than the value of the player in the next row (" + nextPlayersValue + "). Therefore exchanging places.");
+					
+					// exchange places
+					int currentPlayerID = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_ID, row).getContents());
+					int currentPlayerSumValue = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_SUM, row).getContents());
+					int currentPlayerGame1Value = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME1, row).getContents());
+					int currentPlayerGame2Value = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME2, row).getContents());
+					int currentPlayerGame3Value = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME3, row).getContents());
+					int currentPlayerGame4Value = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME4, row).getContents());
+					int currentPlayerGame5Value = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME5, row).getContents());
+
+					int nextPlayerID = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_ID, row+1).getContents());
+					int nextPlayerSumValue = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_SUM, row+1).getContents());
+					int nextPlayerGame1Value = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME1, row+1).getContents());
+					int nextPlayerGame2Value = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME2, row+1).getContents());
+					int nextPlayerGame3Value = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME3, row+1).getContents());
+					int nextPlayerGame4Value = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME4, row+1).getContents());
+					int nextPlayerGame5Value = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME5, row+1).getContents());
+					
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_ID, row)).setValue(nextPlayerID);
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_SUM, row)).setValue(nextPlayerSumValue);
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME1, row)).setValue(nextPlayerGame1Value);
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME2, row)).setValue(nextPlayerGame2Value);
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME3, row)).setValue(nextPlayerGame3Value);
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME4, row)).setValue(nextPlayerGame4Value);
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME5, row)).setValue(nextPlayerGame5Value);
+					
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_ID, row+1)).setValue(currentPlayerID);
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_SUM, row+1)).setValue(currentPlayerSumValue);
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME1, row+1)).setValue(currentPlayerGame1Value);
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME2, row+1)).setValue(currentPlayerGame2Value);
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME3, row+1)).setValue(currentPlayerGame3Value);
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME4, row+1)).setValue(currentPlayerGame4Value);
+					((jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME5, row+1)).setValue(currentPlayerGame5Value);
+					
+					if (row == 1)
+						row--;
+					else
+						row -= 2;
+				}
+			}			
+			
+			rankingsDataWritableWorkbook.write();					
+			deinitializeWritingFileConnection();						
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}			
 	}
 	
 	public Vector<Player> getAllPlayers()
