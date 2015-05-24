@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.File;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import jxl.Cell;
 import jxl.Sheet;
@@ -12,6 +14,8 @@ import jxl.write.*;
 
 public class ExcelRankingsDataFile implements DataInterface
 {
+	private final static Logger LOGGER = Logger.getLogger(ExcelRankingsDataFile.class.getName());
+
 	// Constants of column-numbers for players sheet
 	public static final int COLUMN_ID = 0;
 	public static final int COLUMN_FIRST_NAME = 1;
@@ -59,6 +63,7 @@ public class ExcelRankingsDataFile implements DataInterface
 	*/
 	public ExcelRankingsDataFile ()
 	{
+		LOGGER.setLevel(Level.WARNING);
 	}
 
 	private void initializeWritingFileConnection()
@@ -276,6 +281,7 @@ public class ExcelRankingsDataFile implements DataInterface
 	{
 		int newID = -1;
 		int zeile = 0;
+		DoublesMatch returnDoublesMatch;
 		
 		try
 		{
@@ -357,17 +363,71 @@ public class ExcelRankingsDataFile implements DataInterface
 
 			jxl.write.Number numberPointsTeam2Set3 = new jxl.write.Number(COLUMN_POINTS_TEAM2_SET3, zeile, pointsTeam2Set3);
 			doublesWritableSheet.addCell(numberPointsTeam2Set3);
-			
-			// ToDo: add doubles match to rankings
-			
+						
 			rankingsDataWritableWorkbook.write();
-			deinitializeWritingFileConnection();
+			deinitializeWritingFileConnection();						
+			
+			LOGGER.finer("Written new match into Excel-File.");			
 		}
 		catch (Exception ex)
 		{
 			ex.printStackTrace();
 		}
 		
+		// add doubles match to rankings
+		int player1team1value = getPlayerValue (player1team1ID);
+		int player2team1value = getPlayerValue (player2team1ID);
+		int player1team2value = getPlayerValue (player1team2ID);
+		int player2team2value = getPlayerValue (player2team2ID);
+		
+		int team1Value = player1team1value + player2team1value;
+		int team2Value = player1team2value + player2team2value;
+		
+		LOGGER.fine("Team1Value is: " + team1Value);
+		LOGGER.fine("Team2Value is: " + team2Value);
+		
+		int winnerValue = team1Value <= team2Value?team1Value:team2Value;
+		int looserValue = team1Value > team2Value?team1Value:team2Value;
+		
+		boolean team1isWinner = false;
+		
+		if (pointsTeam1Set1 > pointsTeam2Set1)
+			if (pointsTeam1Set2 > pointsTeam2Set2)
+				team1isWinner = true;
+			else
+				if (pointsTeam1Set3 > pointsTeam2Set3)
+					team1isWinner = true;
+					
+		if (team1isWinner)
+		{
+			LOGGER.finer("Team1 is winner and should therefore get the winnerValue of " + winnerValue);
+			LOGGER.finer("Team2 is looser and should therefore get the looserValue of " + looserValue);
+			LOGGER.finer("Giving player 1 of team 1 the new value of " + winnerValue * player1team1value / team1Value);
+			LOGGER.finer("Giving player 2 of team 1 the new value of " + winnerValue * player2team1value / team1Value);
+			LOGGER.finer("Giving player 1 of team 2 the new value of " + looserValue * player1team2value / team2Value);
+			LOGGER.finer("Giving player 2 of team 2 the new value of " + looserValue * player2team2value / team2Value);
+			addPlayerValue(player1team1ID, winnerValue * player1team1value / team1Value);
+			addPlayerValue(player2team1ID, winnerValue * player2team1value / team1Value);				
+			addPlayerValue(player1team2ID, looserValue * player1team2value / team2Value);
+			addPlayerValue(player2team2ID, looserValue * player2team2value / team2Value);			
+		}
+		else
+		{
+			LOGGER.finer("Team2 is winner and should therefore get the winnerValue of " + winnerValue);
+			LOGGER.finer("Team1 is looser and should therefore get the looserValue of " + looserValue);
+			LOGGER.finer("Giving player 1 of team 1 the new value of " + looserValue * player1team1value / team1Value);
+			LOGGER.finer("Giving player 2 of team 1 the new value of " + looserValue * player2team1value / team1Value);
+			LOGGER.finer("Giving player 1 of team 2 the new value of " + winnerValue * player1team2value / team2Value);
+			LOGGER.finer("Giving player 2 of team 2 the new value of " + winnerValue * player2team2value / team2Value);
+			addPlayerValue(player1team1ID, looserValue * player1team1value / team1Value);
+			addPlayerValue(player2team1ID, looserValue * player2team1value / team1Value);				
+			addPlayerValue(player1team2ID, winnerValue * player1team2value / team2Value);
+			addPlayerValue(player2team2ID, winnerValue * player2team2value / team2Value);			
+		}
+		
+		reorderRanking();
+		
+		// ToDo: return new DoublesMatch (newID, player1team1ID, player2team1ID, player1team2ID, player2team2ID, pointsTeam1Set1, pointsTeam2Set1, pointsTeam1Set2, pointsTeam2Set2, pointsTeam1Set3, pointsTeam2Set3);
 		return new DoublesMatch();
 	}
 	
@@ -407,9 +467,96 @@ public class ExcelRankingsDataFile implements DataInterface
 		rankingsWritableSheet.addCell(numberRankingPlayerPointsGame5);
 	}
 	
-	public boolean addPlayerValue (int playerID, int newPlayerValue)
+	private boolean addPlayerValue (int playerID, int newPlayerValue)
 	{
+		LOGGER.finer ("Trying to add new value " + newPlayerValue + " to player with playerID " + playerID);
+		
+		try
+		{
+			initializeWritingFileConnection();
+
+			int lastRow = rankingsWritableSheet.getRows();
+		
+			for (int row = 1; row < lastRow; row++)
+			{
+				if (Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_ID, row).getContents()) == playerID)
+				{
+					LOGGER.finest ("Found player with ID " + playerID + " in row " + row);
+					
+					int secondRankingsValue = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME2, row).getContents());
+					int thirdRankingsValue = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME3, row).getContents());
+					int fourthRankingsValue = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME4, row).getContents());
+					int fifthRankingsValue = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME5, row).getContents());
+					
+					LOGGER.finest ("New player values for player with ID " + playerID + " are: " + secondRankingsValue + ", "+ thirdRankingsValue + ", " + fourthRankingsValue + ", " + fifthRankingsValue + ", " + newPlayerValue);
+					
+					jxl.write.Number newFirstValueNumber = (jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME1, row);
+					jxl.write.Number newSecondValueNumber = (jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME2, row);
+					jxl.write.Number newThirdValueNumber = (jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME3, row);
+					jxl.write.Number newFourthValueNumber = (jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME4, row);
+					jxl.write.Number newFifthValueNumber = (jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME5, row);
+
+					newFirstValueNumber.setValue (secondRankingsValue);
+					newSecondValueNumber.setValue (thirdRankingsValue);
+					newThirdValueNumber.setValue (fourthRankingsValue);
+					newFourthValueNumber.setValue (fifthRankingsValue);
+					newFifthValueNumber.setValue (newPlayerValue);
+					
+					jxl.write.Number newSumValueNumber = (jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_SUM, row);
+					
+					newSumValueNumber.setValue (newPlayerValue + secondRankingsValue + thirdRankingsValue + fourthRankingsValue + fifthRankingsValue);
+				}
+			}
+		
+			rankingsDataWritableWorkbook.write();
+			deinitializeWritingFileConnection();						
+			
+			LOGGER.finer("Added new Player Value for Player with ID: " + playerID);			
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}		
+		
 		return true;
+	}
+	
+	private int getPlayerValue (int playerID)
+	{
+		try
+		{
+			initializeReadingFileConnection();
+
+			int lastRow = rankingsReadableSheet.getRows();
+
+			for (int row = 1; row < lastRow; row++)
+			{
+				if (Integer.parseInt(rankingsReadableSheet.getCell (COLUMN_ID, row).getContents()) == playerID)
+				{
+					int returnValue = Integer.parseInt (rankingsReadableSheet.getCell (COLUMN_RANK_VALUE, row).getContents());
+
+					deinitializeReadingFileConnection();
+					
+					LOGGER.fine("Returning " + returnValue + " player value for Player with ID: " + playerID);			
+					
+					return returnValue;
+				}
+			}
+			
+			deinitializeReadingFileConnection();
+			
+			LOGGER.warning("Did not find Player with ID: " + playerID + ". Therefore no player value can be returned");			
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}		
+		
+		return -1;
+	}
+	
+	private void reorderRanking()
+	{
 	}
 	
 	public Vector<Player> getAllPlayers()
