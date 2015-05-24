@@ -29,4 +29,5 @@ public interface DataInterface
 	
 	public Vector<Player> getAllPlayers();
 	public Vector<Match> getAllMaches();
+	public Vector<RankingEntry> getRankingEntries();
 }

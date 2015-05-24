@@ -673,4 +673,53 @@ public class ExcelRankingsDataFile implements DataInterface
 	{
 		return new Vector<Match>();
 	}	
+
+	public Vector<RankingEntry> getRankingEntries()
+	{
+		Vector<RankingEntry> allRankingEntriesVector = new Vector<RankingEntry>();
+		
+		int numberOfRankingEntries = 0;
+		
+		try
+		{
+			initializeReadingFileConnection();
+			
+			numberOfRankingEntries = rankingsReadableSheet.getRows() - 1;
+			
+			for (int currentRankingEntry=1; currentRankingEntry <= numberOfRankingEntries;currentRankingEntry++)
+			{
+				Cell a1 = rankingsReadableSheet.getCell(COLUMN_RANK, currentRankingEntry);
+				Cell a2 = rankingsReadableSheet.getCell(COLUMN_RANK_VALUE, currentRankingEntry);
+				Cell a3 = rankingsReadableSheet.getCell(COLUMN_RANKING_PLAYER_ID, currentRankingEntry);
+				Cell a4 = rankingsReadableSheet.getCell(COLUMN_RANKING_PLAYER_POINTS_SUM, currentRankingEntry);
+				Cell a5 = rankingsReadableSheet.getCell(COLUMN_RANKING_PLAYER_POINTS_GAME1, currentRankingEntry);
+				Cell a6 = rankingsReadableSheet.getCell(COLUMN_RANKING_PLAYER_POINTS_GAME2, currentRankingEntry);
+				Cell a7 = rankingsReadableSheet.getCell(COLUMN_RANKING_PLAYER_POINTS_GAME3, currentRankingEntry);
+				Cell a8 = rankingsReadableSheet.getCell(COLUMN_RANKING_PLAYER_POINTS_GAME4, currentRankingEntry);
+				Cell a9 = rankingsReadableSheet.getCell(COLUMN_RANKING_PLAYER_POINTS_GAME5, currentRankingEntry);
+			
+				int rankingPosition = Integer.parseInt(a1.getContents());
+				int rankingValue = Integer.parseInt(a2.getContents());
+				int rankingPlayerID = Integer.parseInt(a3.getContents());
+				int rankingSum = Integer.parseInt(a4.getContents());
+				int rankingGame1 = Integer.parseInt(a5.getContents());
+				int rankingGame2 = Integer.parseInt(a6.getContents());
+				int rankingGame3 = Integer.parseInt(a7.getContents());
+				int rankingGame4 = Integer.parseInt(a8.getContents());
+				int rankingGame5 = Integer.parseInt(a9.getContents());
+				
+				allRankingEntriesVector.add (new RankingEntry(rankingPosition, rankingValue, rankingPlayerID, rankingSum, rankingGame1, rankingGame2, rankingGame3, rankingGame4, rankingGame5));
+			}
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+		finally
+		{
+			deinitializeReadingFileConnection();
+		}
+		
+		return allRankingEntriesVector;	
+	}
 }
