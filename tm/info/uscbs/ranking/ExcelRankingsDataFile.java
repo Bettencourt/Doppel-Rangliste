@@ -63,7 +63,7 @@ public class ExcelRankingsDataFile implements DataInterface
 	*/
 	public ExcelRankingsDataFile ()
 	{
-		LOGGER.setLevel(Level.WARNING);
+		LOGGER.setLevel(Level.INFO);
 	}
 
 	private void initializeWritingFileConnection()
@@ -279,6 +279,8 @@ public class ExcelRankingsDataFile implements DataInterface
 	
 	public DoublesMatch addDoublesMatch (int player1team1ID, int player2team1ID, int player1team2ID, int player2team2ID, int pointsTeam1Set1, int pointsTeam2Set1, int pointsTeam1Set2, int pointsTeam2Set2, int pointsTeam1Set3, int pointsTeam2Set3)
 	{
+		LOGGER.fine ("Adding DoublesMatch for Players player1team1 (" + getPlayer(player1team1ID).getFullName() + "), player2team1 (" + getPlayer(player2team1ID).getFullName() + "), player1team2 (" + getPlayer(player1team2ID).getFullName() + "), player2team2 (" + getPlayer(player2team2ID).getFullName() + ")");
+		
 		int newID = -1;
 		int zeile = 0;
 		DoublesMatch returnDoublesMatch;
@@ -383,8 +385,8 @@ public class ExcelRankingsDataFile implements DataInterface
 		int team1Value = player1team1value + player2team1value;
 		int team2Value = player1team2value + player2team2value;
 		
-		LOGGER.fine("Team1Value is: " + team1Value);
-		LOGGER.fine("Team2Value is: " + team2Value);
+		LOGGER.finer("Team1Value is: " + team1Value);
+		LOGGER.finer("Team2Value is: " + team2Value);
 		
 		int winnerValue = team1Value <= team2Value?team1Value:team2Value;
 		int looserValue = team1Value > team2Value?team1Value:team2Value;
@@ -479,7 +481,7 @@ public class ExcelRankingsDataFile implements DataInterface
 		
 			for (int row = 1; row < lastRow; row++)
 			{
-				if (Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_ID, row).getContents()) == playerID)
+				if (Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_ID, row).getContents()) == playerID)
 				{
 					LOGGER.finest ("Found player with ID " + playerID + " in row " + row);
 					
@@ -488,7 +490,7 @@ public class ExcelRankingsDataFile implements DataInterface
 					int fourthRankingsValue = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME4, row).getContents());
 					int fifthRankingsValue = Integer.parseInt(rankingsWritableSheet.getCell (COLUMN_RANKING_PLAYER_POINTS_GAME5, row).getContents());
 					
-					LOGGER.finest ("New player values for player with ID " + playerID + " are: " + secondRankingsValue + ", "+ thirdRankingsValue + ", " + fourthRankingsValue + ", " + fifthRankingsValue + ", " + newPlayerValue);
+					LOGGER.finest ("New player values for player with ID " + playerID + " are: " + secondRankingsValue + ", " + thirdRankingsValue + ", " + fourthRankingsValue + ", " + fifthRankingsValue + ", " + newPlayerValue);
 					
 					jxl.write.Number newFirstValueNumber = (jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME1, row);
 					jxl.write.Number newSecondValueNumber = (jxl.write.Number) rankingsWritableSheet.getWritableCell(COLUMN_RANKING_PLAYER_POINTS_GAME2, row);
@@ -531,7 +533,7 @@ public class ExcelRankingsDataFile implements DataInterface
 
 			for (int row = 1; row < lastRow; row++)
 			{
-				if (Integer.parseInt(rankingsReadableSheet.getCell (COLUMN_ID, row).getContents()) == playerID)
+				if (Integer.parseInt(rankingsReadableSheet.getCell (COLUMN_RANKING_PLAYER_ID, row).getContents()) == playerID)
 				{
 					int returnValue = Integer.parseInt (rankingsReadableSheet.getCell (COLUMN_RANK_VALUE, row).getContents());
 
