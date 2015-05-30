@@ -262,7 +262,7 @@ public class ExcelRankingsDataFile implements DataInterface
 			jxl.write.Number numberSex = new jxl.write.Number(COLUMN_SEX, zeile, sex?1:0);
 			playersWritableSheet.addCell(numberSex);			
 			
-			// ToDo: Add player to rankings
+			// Add player to rankings
 			addPlayerToRankings (newID);
 			
 			rankingsDataWritableWorkbook.write();
@@ -283,6 +283,7 @@ public class ExcelRankingsDataFile implements DataInterface
 		
 		int newID = -1;
 		int zeile = 0;
+		
 		DoublesMatch returnDoublesMatch;
 		
 		try

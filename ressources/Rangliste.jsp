@@ -23,7 +23,7 @@
           <tr>
             <td align="left">&nbsp; <!--<a href="/accounts/login/?next=/ranking/">Anmelden</a> --></td>
             <td align="center"><a href="/DoppelAufnehmen.jsp">Doppel aufnehmen</a></td>
-            <td align="center">&nbsp; <!--<a href="/ranking/specialFunctions/">Sonderfunktionen</a> --> </td>
+            <td align="center"><a href="/SpielerHinzufuegen.html">Spieler hinzufügen</a></td>
             <td align="right">&nbsp; <!--<a href="/accounts/logout/">Abmelden</a>--></td>
           </tr>
           <tr>
@@ -36,7 +36,7 @@
         
     </div>
 
-    <div id="content">
+    <div id="content" align="center">
     
         <h1>USC Rangliste</h1>
         

@@ -18,6 +18,7 @@ public class AddDoubles extends HttpServlet
   
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		StringBuffer responseHTMLPage = new StringBuffer();
 		// Set response content type
 		response.setContentType("text/html");
 
@@ -38,12 +39,22 @@ public class AddDoubles extends HttpServlet
 		
 		// Add match to database
 		myData.addDoublesMatch(player1team1ID, player2team1ID, player1team2ID, player2team2ID, pointsTeam1set1, pointsTeam2set1, pointsTeam1set2, pointsTeam2set2, pointsTeam1set3, pointsTeam2set3);
-		
-		// ToDo: Recalculate rankings
-		
+
 		// give Feedback to the user
+		responseHTMLPage.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n");
+		responseHTMLPage.append("\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"\n");
+		responseHTMLPage.append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"de\" lang=\"de\">");
+		responseHTMLPage.append("<head>");
+		responseHTMLPage.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"/static/ranking.css\" />");
+		responseHTMLPage.append("<title>Doppel zur USC Doppel-Rangliste hinzugefügt</title>");
+		responseHTMLPage.append("</head><body>" + "<h1>Doppel hinzugefügt</h1><br/>");
+		responseHTMLPage.append("Doppel zwischen " + myData.getPlayer(player1team1ID).getLastName() + "/" + myData.getPlayer(player2team1ID).getLastName() + " und " + myData.getPlayer(player1team2ID).getLastName() + "/" + myData.getPlayer(player2team2ID).getLastName() + " wurde der Datenbank hinzugefügt.<br/>");
+		responseHTMLPage.append("Zurück zur <a href=\"./Rangliste.jsp\">Rangliste</a><br/>");
+		responseHTMLPage.append("Neues <a href=\"./DoppelAufnehmen.jsp\">Doppel hinzufügen</a>");
+		responseHTMLPage.append("</body>");
+
 		PrintWriter out = response.getWriter();
-		out.println("Doppel zwischen " + myData.getPlayer(player1team1ID).getLastName() + "/" + myData.getPlayer(player2team1ID).getLastName() + " und " + myData.getPlayer(player1team2ID).getLastName() + "/" + myData.getPlayer(player2team2ID).getLastName() + " wurde der Datenbank hinzugefügt.");
+		out.println(responseHTMLPage.toString());
 	}
 
 	public void destroy()
